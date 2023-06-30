@@ -4,10 +4,11 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { WalletContextProvider } from '@/contexts/WalletContextProvider';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { useMemo } from 'react';
-import { clusterApiUrl } from '@solana/web3.js'
+import { clusterApiUrl } from '@solana/web3.js';
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
+  BackpackWalletAdapter,
   SolletWalletAdapter,
   SolletExtensionWalletAdapter,
   TorusWalletAdapter,
@@ -18,6 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   const wallets = useMemo(
     () => [
+      new BackpackWalletAdapter(),
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
       new SolletWalletAdapter({ network }),
