@@ -13,6 +13,8 @@ import {
   SolletExtensionWalletAdapter,
   TorusWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
+import Layout from '@/components/layout/Layout';
+require('@solana/wallet-adapter-react-ui/styles.css');
 
 export default function App({ Component, pageProps }: AppProps) {
   const network = WalletAdapterNetwork.Devnet;
@@ -35,7 +37,9 @@ export default function App({ Component, pageProps }: AppProps) {
       wallets={wallets}
     >
       <ChakraProvider>
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </ChakraProvider>
     </WalletContextProvider>
   );

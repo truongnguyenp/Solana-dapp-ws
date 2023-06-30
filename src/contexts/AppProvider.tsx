@@ -1,6 +1,7 @@
-import { createContext, useState } from 'react';
+import React, { createContext, useMemo, useState } from 'react';
 import { Elusiv } from '@elusiv/sdk';
 import { noop } from 'lodash';
+import { Connection, Keypair } from '@solana/web3.js';
 
 export interface AppProviderProps {}
 
@@ -8,39 +9,42 @@ interface Props {
   children: React.ReactNode;
   wallet: {
     elusiv: Elusiv;
-    keypair: string;
-    setKeypair: (keypair: string) => void;
+    setElusiv: (elusiv: Elusiv) => void;
+    keypair: Keypair;
+    setKeypair: (keypair: Keypair) => void;
+    conn: Connection;
+    setConnection: (conn: Connection) => void;
   };
 }
 
 export const AppContext = createContext<AppProviderProps>({
-  filter: {
-    onClose: noop,
-    onOpen: noop,
-    toggleVisible: noop,
-    visible: false,
-  },
+  elusiv: undefined,
+  setElusiv: noop,
+  keypair: undefined,
+  setKeypair: noop,
+  conn: undefined,
+  setConnection: noop,
 });
 
 export function AppContextProvider({ children }: Props) {
-  const [filterVisible, onOpenFilter, onCloseFilter, onToggleFilter] =
-    useToggle(false);
+  const [elusiv, setElusiv] = useState<Elusiv | undefined>();
+  const [keypair, setKeypair] = useState<Keypair | undefined>();
+  const [conn, setConnection] = useState<Connection | undefined>();
 
-  const [isPendingAsyncAction, setIsPendingAsyncAction] = useState(false);
-  const [searchValue, setSearchValue] = useState<string | undefined>();
-  const [rangeDate, setRangeDate] = useState<RangeDate | undefined>();
+  const memoizedValue = useMemo(
+    () => ({
+      elusiv,
+      setElusiv,
+      keypair,
+      setKeypair,
+      conn,
+      setConnection,
+    }),
+    [elusiv, setElusiv, keypair, setKeypair, conn, setConnection]
+  );
 
   return (
-    <AppContext.Provider
-      value={{
-        filter: {
-          onClose: onCloseFilter,
-          onOpen: onOpenFilter,
-          toggleVisible: onToggleFilter,
-          visible: filterVisible,
-        },
-      }}
-    >
+    <AppContext.Provider value={{ ...memoizedValue }}>
       {children}
     </AppContext.Provider>
   );

@@ -17,6 +17,7 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons';
+import WalletMultiButtonDynamic from './WalletMultiButtonDynamic';
 
 const Links = ['Dashboard', 'Projects', 'Team'];
 
@@ -63,15 +64,9 @@ export default function Header() {
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>
-            <Button
-              variant={'solid'}
-              colorScheme={'teal'}
-              size={'sm'}
-              mr={4}
-              leftIcon={<AddIcon />}
-            >
-              Action
-            </Button>
+            <div className="mr-2">
+              <WalletMultiButtonDynamic />
+            </div>
             <Menu>
               <MenuButton
                 as={Button}
