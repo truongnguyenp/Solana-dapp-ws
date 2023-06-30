@@ -14,7 +14,7 @@
     "@elusiv/sdk": "^0.1.16",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@noble/ed25519": "^2.0.0",
+    "@noble/ed25519": "^1.7.1",
     "@solana/pay": "^0.2.5",
     "@solana/spl-token": "^0.3.8",
     "@solana/wallet-adapter-base": "^0.9.22",
