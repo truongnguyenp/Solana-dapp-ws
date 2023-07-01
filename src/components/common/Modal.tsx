@@ -55,11 +55,15 @@ export default function Modal({
   onClose,
   isOpen,
   onSubmit,
+  modalLabel,
+  children,
   actionLabel = 'Action',
 }: {
   onClose: () => void;
+  children?: React.ReactNode;
   onSubmit: () => void;
   isOpen: boolean;
+  modalLabel: string;
   actionLabel: string;
 }) {
   return (
@@ -71,9 +75,9 @@ export default function Modal({
     >
       <ModalOverlay />
       <ModalContent __css={ChakraStyledModal} className="bg-primary">
-        <ModalHeader>Modal Title</ModalHeader>
+        <ModalHeader>{modalLabel}</ModalHeader>
         <ModalCloseButton />
-        <ModalBody></ModalBody>
+        <ModalBody>{children}</ModalBody>
         <ModalFooter className="flex justify-center">
           <Button colorScheme="purple" onClick={onSubmit}>
             {actionLabel}

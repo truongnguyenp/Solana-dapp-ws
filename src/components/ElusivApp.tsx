@@ -6,6 +6,7 @@ import { useToggle } from 'usehooks-ts';
 import Modal from './common/Modal';
 import { Button } from '@chakra-ui/react';
 import { SendIcon, TopUpIcon, GlobalIcon } from './icons';
+import Topup from './Topup';
 
 export default function ElusivApp() {
   const { publicKey, signMessage, signTransaction } = useWallet();
@@ -35,20 +36,24 @@ export default function ElusivApp() {
     };
   }, [publicKey, connection]);
 
-  const [isTopUpModalVisible, toggleTopUpModalVisible, setIsTopUpModal] =
+  const [isTopUpModalVisible, toggleTopUpModalVisible] = useToggle();
+  const [isSendModalVisible, toggleSendModalVisible] = useToggle();
+  const [isViewTransactionModalVisible, toggleViewTransactionModalVisible] =
     useToggle();
-  const [isSendModalVisible, toggleSendModalVisible, setIsSendModa] =
-    useToggle();
-  const [
-    isViewTransactionModalVisible,
-    toggleViewTransactionModalVisible,
-    setIsViewTransactionModa,
-  ] = useToggle();
 
   return (
     <div>
       <div className="flex justify-center align-center space-between w-full gap-4">
-        <Button
+        <Topup
+          isTopUpModalVisible={isTopUpModalVisible}
+          toggleTopUpModalVisible={toggleTopUpModalVisible}
+        />
+      </div>
+    </div>
+  );
+}
+{
+  /* <Button
           leftIcon={<TopUpIcon />}
           colorScheme="purple"
           onClick={toggleTopUpModalVisible}
@@ -92,7 +97,5 @@ export default function ElusivApp() {
         onClose={() => {
           toggleViewTransactionModalVisible();
         }}
-      />
-    </div>
-  );
+      /> */
 }
