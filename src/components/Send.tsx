@@ -11,10 +11,11 @@ import { AppContext } from "@/contexts/AppProvider";
 interface SendProps {
     totalBalance: bigint | undefined,
     isSendModalVisible: boolean,
-    toggleSendModalVisible: () => void;
+    toggleSendModalVisible: () => void,
+    setTransaction: (obj: any) => void
 }
 
-export default function Send({ totalBalance, isSendModalVisible, toggleSendModalVisible }: SendProps) {
+export default function Send({ totalBalance, isSendModalVisible, toggleSendModalVisible, setTransaction }: SendProps) {
     const { publicKey } = useWallet();
     const toast = useToast();
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -53,7 +54,8 @@ export default function Send({ totalBalance, isSendModalVisible, toggleSendModal
             duration: 9000,
             isClosable: true,
             position: "top-right"
-        })
+        });
+        setTransaction(sendTx);
         setIsLoading(false);
     }
 

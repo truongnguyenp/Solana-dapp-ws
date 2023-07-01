@@ -8,19 +8,19 @@ import {
 } from '@chakra-ui/react';
 import { TopUpIcon } from './icons';
 import Modal from './common/Modal';
-import { Elusiv, TopupTxData } from '@elusiv/sdk';
+import { TopupTxData } from '@elusiv/sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { isNumber } from 'util';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { AppContext } from '@/contexts/AppProvider';
 
 export default function Topup({
   isTopUpModalVisible,
   toggleTopUpModalVisible,
+  setTransaction
 }: {
   isTopUpModalVisible: boolean;
   toggleTopUpModalVisible: () => void;
-  elusiv: Elusiv | undefined;
+  setTransaction: (obj: any) => void
 }) {
   const {
     wallet: { setElusiv, elusiv },
@@ -29,17 +29,15 @@ export default function Topup({
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState<number>();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setAmount(e.target.value as number);
+    setAmount(e.target.value as unknown as number);
   const toast = useToast();
   // topup function to elusiv wallet
   const topup = async () => {
-    console.log('txn');
-    console.log(elusiv);
     if (!signTransaction || !elusiv || !amount) return;
     setLoading(true);
     try {
       const topupTx = await elusiv?.buildTopUpTx(
-        0.1 * LAMPORTS_PER_SOL,
+        amount * LAMPORTS_PER_SOL,
         'LAMPORTS'
       );
       const signature = await signTransaction(topupTx.tx);
@@ -57,6 +55,7 @@ export default function Topup({
       );
 
       const reponse = await elusiv.sendElusivTx(rebuildTopup);
+      setTransaction(reponse);
       if (reponse?.error) throw new Error(reponse.error);
       toast({
         title: 'Topup succesfully.',

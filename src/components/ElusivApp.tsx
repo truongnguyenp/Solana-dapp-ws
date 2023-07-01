@@ -13,8 +13,19 @@ export default function ElusivApp() {
   } = useContext(AppContext);
   const { publicKey, signMessage } = useWallet();
   const [totalBalance, setTotalBalance] = useState<bigint>();
+  // THIS IS USE FOR CHECK IF HAD TRANSACTION, FETCH TOTAL BALANCE IN ELUSIV
+  const [transaction, setTransaction] = useState();
   const { connection } = useConnection();
   const toast = useToast();
+
+  const fetchTotalBalance = async (elusiv: Elusiv | undefined) => {
+    if (!elusiv) return;
+
+    const totalBalance = await elusiv.getLatestPrivateBalance(
+      'LAMPORTS'
+    );
+    setTotalBalance(totalBalance);
+  }
 
   useEffect(() => {
     const getElusiv = async () => {
@@ -31,10 +42,7 @@ export default function ElusivApp() {
           'devnet'
         );
         setElusiv(elusivInstance); // Update the context value
-        const totalBalance = await elusivInstance.getLatestPrivateBalance(
-          'LAMPORTS'
-        );
-        setTotalBalance(totalBalance);
+        fetchTotalBalance(elusivInstance);
       } catch (error) {
         toast({
           title: 'Reject use Elusiv Payment',
@@ -53,7 +61,11 @@ export default function ElusivApp() {
     return () => {
       setElusiv(undefined); // Reset the context value
     };
-  }, [publicKey, connection, signMessage, setElusiv, toast]);
+  }, [publicKey, connection, signMessage, setElusiv]);
+
+  useEffect(() => {
+    fetchTotalBalance(elusiv);
+  }, [transaction]);
 
   const [isTopUpModalVisible, toggleTopUpModalVisible] = useToggle();
   const [isSendModalVisible, toggleSendModalVisible] = useToggle();
@@ -62,11 +74,12 @@ export default function ElusivApp() {
     <div>
       <div className="flex justify-center align-center space-between w-full gap-4">
         <Topup
-          elusiv={elusiv}
           isTopUpModalVisible={isTopUpModalVisible}
           toggleTopUpModalVisible={toggleTopUpModalVisible}
+          setTransaction={setTransaction}
         />
         <Send
+          setTransaction={setTransaction}
           totalBalance={totalBalance}
           isSendModalVisible={isSendModalVisible}
           toggleSendModalVisible={toggleSendModalVisible}
