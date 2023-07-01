@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useContext } from 'react';
 import {
   Box,
   Flex,
@@ -15,9 +15,14 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  useToast,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons';
 import WalletMultiButtonDynamic from './WalletMultiButtonDynamic';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import { Elusiv, SEED_MESSAGE, TopupTxData } from '@elusiv/sdk';
+import { AppContext } from '@/contexts/AppProvider';
+
 
 const Links = ['Dashboard', 'Projects', 'Team'];
 
@@ -39,6 +44,36 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 
 export default function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { publicKey, signMessage } = useWallet();
+  const toast = useToast();
+  const { connection } = useConnection();
+  const { wallet: { setElusiv } } = useContext(AppContext);
+
+  const initElusiv = async () => {
+    if (!publicKey || !signMessage) return;
+    const encodedMessage = new TextEncoder().encode(SEED_MESSAGE);
+    
+    try {
+      const seed = await signMessage(encodedMessage);
+      const elusivInstance = await Elusiv.getElusivInstance(
+        seed,
+        publicKey,
+        connection,
+        'devnet'
+      );
+      setElusiv(elusivInstance);
+    } catch (error) {
+      toast({
+        title: 'Reject use Elusiv Payment',
+        description: "You reject to provide seed and key for Elusiv",
+        status: 'info',
+        duration: 9000,
+        isClosable: true,
+        position: "top-right"
+      })
+      return;
+    }
+  }
 
   return (
     <>
@@ -65,7 +100,16 @@ export default function Header() {
           </HStack>
           <Flex alignItems={'center'}>
             <div className="mr-2">
-              <WalletMultiButtonDynamic />
+              <div className='flex-row flex'>
+                <button 
+                  className='elusiv-button mr-4'
+                  onClick={initElusiv}
+                >
+                  Connect to Elusiv
+                </button>
+
+                <WalletMultiButtonDynamic />
+              </div>
             </div>
             <Menu>
               <MenuButton

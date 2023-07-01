@@ -9,7 +9,6 @@ import {
   Button,
 } from '@chakra-ui/react';
 import React from 'react';
-import { styled } from 'styled-components';
 import { defineStyleConfig } from '@chakra-ui/react';
 
 const ChakraStyledModal = defineStyleConfig({
