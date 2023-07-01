@@ -31,7 +31,6 @@ export default function Send({ totalBalance, isSendModalVisible, toggleSendModal
                 isClosable: true
             });
 
-            console.log(elusiv);
             return;
         };
 
@@ -55,9 +54,8 @@ export default function Send({ totalBalance, isSendModalVisible, toggleSendModal
             isClosable: true,
             position: "top-right"
         })
+        setIsLoading(false);
     }
-
-    console.log(totalBalance)
 
     return (
         <div>
@@ -73,11 +71,12 @@ export default function Send({ totalBalance, isSendModalVisible, toggleSendModal
                 isOpen={isSendModalVisible}
                 actionLabel="Send"
                 onClose={toggleSendModalVisible}
-                modalLabel="Send"
+                modalLabel="Send Private Balance from Elusiv to recepient"
                 onSubmit={async () => {
                     await handleSendPrivateBalance(receivePubKey, amount);
                     toggleSendModalVisible()
                 }}
+                loading={isLoading}
             >
                 <div>Total Balance: {totalBalance ? new BigNumber(totalBalance.toString()).dividedBy(LAMPORTS_PER_SOL).toString() + " SOL": "" }</div>
 

@@ -47,7 +47,7 @@ export default function Header() {
   const { publicKey, signMessage } = useWallet();
   const toast = useToast();
   const { connection } = useConnection();
-  const { wallet: { setElusiv } } = useContext(AppContext);
+  const { wallet: { setElusiv, elusiv } } = useContext(AppContext);
 
   const initElusiv = async () => {
     if (!publicKey || !signMessage) return;
@@ -101,12 +101,12 @@ export default function Header() {
           <Flex alignItems={'center'}>
             <div className="mr-2">
               <div className='flex-row flex'>
-                <button 
+                {!elusiv && <button 
                   className='elusiv-button mr-4'
                   onClick={initElusiv}
                 >
                   Connect to Elusiv
-                </button>
+                </button>}
 
                 <WalletMultiButtonDynamic />
               </div>
