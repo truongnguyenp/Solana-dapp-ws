@@ -12,7 +12,6 @@ export default function ElusivApp() {
     wallet: { setElusiv, elusiv },
   } = useContext(AppContext);
   const { publicKey, signMessage } = useWallet();
-  const [elusivIns, setElusivInstance] = useState<Elusiv>();
   const [totalBalance, setTotalBalance] = useState<bigint>();
   const { connection } = useConnection();
   const toast = useToast();
@@ -31,12 +30,10 @@ export default function ElusivApp() {
           connection,
           'devnet'
         );
-        setElusivInstance(elusivInstance);
         setElusiv(elusivInstance); // Update the context value
         const totalBalance = await elusivInstance.getLatestPrivateBalance(
           'LAMPORTS'
         );
-        console.log(elusiv);
         setTotalBalance(totalBalance);
       } catch (error) {
         toast({
@@ -54,16 +51,9 @@ export default function ElusivApp() {
     getElusiv();
 
     return () => {
-      setElusivInstance(undefined);
       setElusiv(undefined); // Reset the context value
     };
   }, [publicKey, connection, signMessage, setElusiv, toast]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      console.log('Updated elusiv value:', elusiv);
-    }, 10000);
-  }, [elusiv]);
 
   const [isTopUpModalVisible, toggleTopUpModalVisible] = useToggle();
   const [isSendModalVisible, toggleSendModalVisible] = useToggle();
