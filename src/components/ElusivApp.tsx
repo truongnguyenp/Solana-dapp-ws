@@ -1,23 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Elusiv, SEED_MESSAGE, TopupTxData } from '@elusiv/sdk';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useToggle } from 'usehooks-ts';
-import Modal from './common/Modal';
-import { Button } from '@chakra-ui/react';
-import { SendIcon, TopUpIcon, GlobalIcon } from './icons';
+import { useToast } from '@chakra-ui/react';
 import Topup from './Topup';
-
+import Send from './Send';
+import { AppContext } from '@/contexts/AppProvider';
 export default function ElusivApp() {
-  const { publicKey, signMessage, signTransaction } = useWallet();
-  const [elusiv, setElusiv] = useState<Elusiv>();
+  const { wallet: { setElusiv } } = useContext(AppContext);
+  const { publicKey, signMessage } = useWallet();
+  const [totalBalance, setTotalBalance] = useState<bigint>();
   const { connection } = useConnection();
+  const toast = useToast();
+
 
   useEffect(() => {
     const getElusiv = async () => {
-      if (publicKey && signMessage) {
-        const encodedMessage = new TextEncoder().encode(SEED_MESSAGE);
+      if (!publicKey || !signMessage) return;
 
+      const encodedMessage = new TextEncoder().encode(SEED_MESSAGE);
+
+      try {
         const seed = await signMessage(encodedMessage);
         const elusivInstance = await Elusiv.getElusivInstance(
           seed,
@@ -26,6 +29,18 @@ export default function ElusivApp() {
           'devnet'
         );
         setElusiv(elusivInstance);
+      const totalBalance = await elusivInstance.getLatestPrivateBalance("LAMPORTS");
+      setTotalBalance(totalBalance);
+      } catch (error) {
+        toast({
+          title: 'Reject use Elusiv Payment',
+          description: "You reject to provide seed and key for Elusiv",
+          status: 'info',
+          duration: 9000,
+          isClosable: true,
+          position: "top-right"
+        })
+        return;
       }
     };
 
@@ -36,10 +51,15 @@ export default function ElusivApp() {
     };
   }, [publicKey, connection]);
 
-  const [isTopUpModalVisible, toggleTopUpModalVisible] = useToggle();
-  const [isSendModalVisible, toggleSendModalVisible] = useToggle();
-  const [isViewTransactionModalVisible, toggleViewTransactionModalVisible] =
+  const [isTopUpModalVisible, toggleTopUpModalVisible, setIsTopUpModal] =
     useToggle();
+  const [isSendModalVisible, toggleSendModalVisible, setIsSendModa] =
+    useToggle();
+  const [
+    isViewTransactionModalVisible,
+    toggleViewTransactionModalVisible,
+    setIsViewTransactionModa,
+  ] = useToggle();
 
   return (
     <div>
@@ -47,6 +67,11 @@ export default function ElusivApp() {
         <Topup
           isTopUpModalVisible={isTopUpModalVisible}
           toggleTopUpModalVisible={toggleTopUpModalVisible}
+        />
+        <Send
+          totalBalance={totalBalance}
+          isSendModalVisible={isSendModalVisible}
+          toggleSendModalVisible={toggleSendModalVisible}
         />
       </div>
     </div>
@@ -76,21 +101,21 @@ export default function ElusivApp() {
         </Button>
       </div>
 
-      <Modal
-        actionLabel="Topup"
-        isOpen={isTopUpModalVisible}
-        onClose={() => {
-          toggleTopUpModalVisible();
-        }}
-      />
+            <Modal
+                actionLabel="Topup"
+                isOpen={isTopUpModalVisible}
+                onClose={() => {
+                    toggleTopUpModalVisible();
+                }}
+            />
 
-      <Modal
-        actionLabel="Send"
-        isOpen={isSendModalVisible}
-        onClose={() => {
-          toggleSendModalVisible();
-        }}
-      />
+            <Modal
+                actionLabel="Send"
+                isOpen={isSendModalVisible}
+                onClose={() => {
+                    toggleSendModalVisible();
+                }}
+            />
 
       <Modal
         isOpen={isViewTransactionModalVisible}
