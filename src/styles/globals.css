@@ -2,10 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-family: 'Inter', sans-serif;
+@primary-color: #0d8e8b;
+@secondary-color: #1f2024;
+@error: #f74360;
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --primary-color: @primary-color;
+  --secondary-color: @secondary-color;
+  --grey-primary: @grey-primary;
+  --grey-primary-200: @grey-primary-200;
+  --grey-primary-300: @grey-primary-300;
 }
 
 @media (prefers-color-scheme: dark) {

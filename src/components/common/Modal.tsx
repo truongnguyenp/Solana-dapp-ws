@@ -1,43 +1,85 @@
 import {
-    Modal as ChakraModal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    Button,
-  } from '@chakra-ui/react';
+  Modal as ChakraModal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+} from '@chakra-ui/react';
 import React from 'react';
+import { styled } from 'styled-components';
+import { defineStyleConfig } from '@chakra-ui/react';
 
+const ChakraStyledModal = defineStyleConfig({
+  // The styles all button have in common
+  baseStyle: {
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    borderRadius: 'base', // <-- border radius is same for all variants and sizes
+    backgroundColor: '#181818',
+  },
+  // Two sizes: sm and md
+  sizes: {
+    sm: {
+      fontSize: 'sm',
+      px: 4, // <-- px is short for paddingLeft and paddingRight
+      py: 3, // <-- py is short for paddingTop and paddingBottom
+    },
+    md: {
+      fontSize: 'md',
+      px: 6, // <-- these values are tokens from the design system
+      py: 4, // <-- these values are tokens from the design system
+    },
+  },
+  // Two variants: outline and solid
+  variants: {
+    outline: {
+      border: '2px solid',
+      borderColor: 'purple.500',
+      color: 'purple.500',
+    },
+    solid: {
+      bg: 'purple.500',
+      color: 'white',
+    },
+  },
+  // The default size and variant values
+  defaultProps: {
+    size: 'md',
+    variant: 'outline',
+  },
+});
 export default function Modal({
-    onClose,
-    isOpen 
+  onClose,
+  isOpen,
+  onSubmit,
+  actionLabel = 'Action',
 }: {
-    onClose: ()=>void,
-    isOpen: boolean
-}
-){
-    return(
-        <ChakraModal
-        isCentered
-        onClose={onClose}
-        isOpen={isOpen}
-        motionPreset='slideInBottom'
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant='ghost'>Secondary Action</Button>
-          </ModalFooter>
-        </ModalContent>
-      </ChakraModal>
-    )
+  onClose: () => void;
+  onSubmit: () => void;
+  isOpen: boolean;
+  actionLabel: string;
+}) {
+  return (
+    <ChakraModal
+      isCentered
+      onClose={onClose}
+      isOpen={isOpen}
+      motionPreset="slideInBottom"
+    >
+      <ModalOverlay />
+      <ModalContent __css={ChakraStyledModal} className="bg-primary">
+        <ModalHeader>Modal Title</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody></ModalBody>
+        <ModalFooter className="flex justify-center">
+          <Button colorScheme="purple" onClick={onSubmit}>
+            {actionLabel}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </ChakraModal>
+  );
 }
