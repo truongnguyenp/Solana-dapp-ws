@@ -6,6 +6,7 @@ import { useToast } from '@chakra-ui/react';
 import Topup from './Topup';
 import Send from './Send';
 import { AppContext } from '@/contexts/AppProvider';
+import ViewPrivateTransaction from './ViewPrivateTransaction';
 
 export default function ElusivApp() {
   const {
@@ -21,11 +22,9 @@ export default function ElusivApp() {
   const fetchTotalBalance = async (elusiv: Elusiv | undefined) => {
     if (!elusiv) return;
 
-    const totalBalance = await elusiv.getLatestPrivateBalance(
-      'LAMPORTS'
-    );
+    const totalBalance = await elusiv.getLatestPrivateBalance('LAMPORTS');
     setTotalBalance(totalBalance);
-  }
+  };
 
   useEffect(() => {
     const getElusiv = async () => {
@@ -84,6 +83,7 @@ export default function ElusivApp() {
           isSendModalVisible={isSendModalVisible}
           toggleSendModalVisible={toggleSendModalVisible}
         />
+        <ViewPrivateTransaction elusiv={elusiv} />
       </div>
     </div>
   );
