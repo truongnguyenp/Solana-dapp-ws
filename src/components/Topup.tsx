@@ -1,5 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { Button, FormControl, Input, useToast } from '@chakra-ui/react';
+import {
+  Button,
+  FormControl,
+  Input,
+  useToast,
+  FormLabel,
+} from '@chakra-ui/react';
 import { TopUpIcon } from './icons';
 import Modal from './common/Modal';
 import { Elusiv, TopupTxData } from '@elusiv/sdk';
@@ -28,7 +34,7 @@ export default function Topup({
   // topup function to elusiv wallet
   const topup = async () => {
     console.log('txn');
-    console.log(elusiv)
+    console.log(elusiv);
     if (!signTransaction || !elusiv || !amount) return;
     setLoading(true);
     try {
@@ -50,13 +56,14 @@ export default function Topup({
         topupTx.merge
       );
 
-      await elusiv.sendElusivTx(rebuildTopup);
+      const reponse = await elusiv.sendElusivTx(rebuildTopup);
+      if (reponse?.error) throw new Error(reponse.error);
       toast({
         title: 'Topup succesfully.',
         description: `Topup ${amount} SOL succesfully.`,
         status: 'success',
         duration: 9000,
-        position: 'top',
+        position: 'top-right',
         isClosable: true,
       });
     } catch (error) {
@@ -88,12 +95,13 @@ export default function Topup({
         isOpen={isTopUpModalVisible}
         actionLabel="Topup"
         onClose={toggleTopUpModalVisible}
-        modalLabel="Topup"
+        modalLabel="Topup to Elusiv"
         onSubmit={() => {
           topup();
         }}
       >
         <FormControl isRequired>
+          <FormLabel>Amount (SOL)</FormLabel>
           <Input value={amount} onChange={handleInputChange}></Input>
         </FormControl>
       </Modal>
