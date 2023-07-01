@@ -5,6 +5,7 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useToggle } from 'usehooks-ts';
 import Modal from './common/Modal';
 import { Button } from '@chakra-ui/react';
+import ViewPrivateTransaction from './ViewPrivateTransaction';
 
 export default function ElusivApp() {
     const { publicKey, signMessage, signTransaction } = useWallet()
@@ -52,6 +53,8 @@ export default function ElusivApp() {
             />
 
            }
+
+           <ViewPrivateTransaction elusiv={elusiv}/>
         </div>
     )
 }
