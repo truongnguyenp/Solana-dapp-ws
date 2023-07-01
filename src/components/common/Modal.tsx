@@ -55,6 +55,7 @@ export default function Modal({
   isOpen,
   onSubmit,
   modalLabel,
+  loading,
   children,
   actionLabel = 'Action',
 }: {
@@ -64,6 +65,7 @@ export default function Modal({
   isOpen: boolean;
   modalLabel: string;
   actionLabel: string;
+  loading: boolean;
 }) {
   return (
     <ChakraModal
@@ -78,7 +80,7 @@ export default function Modal({
         <ModalCloseButton />
         <ModalBody>{children}</ModalBody>
         <ModalFooter className="flex justify-center">
-          <Button colorScheme="purple" onClick={onSubmit}>
+          <Button colorScheme="purple" onClick={onSubmit} isLoading={loading}>
             {actionLabel}
           </Button>
         </ModalFooter>

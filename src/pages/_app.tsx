@@ -14,6 +14,7 @@ import {
   TorusWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import Layout from '@/components/layout/Layout';
+import { AppContextProvider } from '@/contexts/AppProvider';
 require('@solana/wallet-adapter-react-ui/styles.css');
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -36,11 +37,13 @@ export default function App({ Component, pageProps }: AppProps) {
       network={network}
       wallets={wallets}
     >
-      <ChakraProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </ChakraProvider>
+      <AppContextProvider>
+        <ChakraProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ChakraProvider>
+      </AppContextProvider>
     </WalletContextProvider>
   );
 }

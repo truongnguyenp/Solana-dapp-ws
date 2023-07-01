@@ -1,13 +1,12 @@
 import React, { createContext, useMemo, useState } from 'react';
 import { Elusiv } from '@elusiv/sdk';
 import { noop } from 'lodash';
-import { Connection, Keypair } from '@solana/web3.js';
 
 interface AppProviderProps {
   children?: React.ReactNode;
   wallet: {
     elusiv: Elusiv | undefined;
-    setElusiv: (elusiv: Elusiv|undefined) => void;
+    setElusiv: (elusiv: Elusiv | undefined) => void;
   };
 }
 
@@ -23,17 +22,15 @@ export function AppContextProvider({ children }: AppProviderProps) {
 
   const memoizedValue = useMemo(
     () => ({
-     wallet: {
+      wallet: {
         elusiv,
         setElusiv,
-      }
+      },
     }),
     [elusiv, setElusiv]
   );
 
   return (
-    <AppContext.Provider value={{ ...memoizedValue }}>
-      {children}
-    </AppContext.Provider>
+    <AppContext.Provider value={memoizedValue}>{children}</AppContext.Provider>
   );
 }
