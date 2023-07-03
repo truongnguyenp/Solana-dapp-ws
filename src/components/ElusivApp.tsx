@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect, useContext } from 'react';
 import { Elusiv, SEED_MESSAGE } from '@elusiv/sdk';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
