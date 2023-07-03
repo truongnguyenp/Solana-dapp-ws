@@ -56,7 +56,7 @@ export default function Topup({
 
       const reponse = await elusiv.sendElusivTx(rebuildTopup);
       setTransaction(reponse);
-      if (reponse?.error) throw new Error(reponse.error);
+      if (reponse?.err) throw new Error(reponse.err);
       toast({
         title: 'Topup succesfully.',
         description: `Topup ${amount} SOL succesfully.`,

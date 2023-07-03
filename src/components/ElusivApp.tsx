@@ -68,6 +68,8 @@ export default function ElusivApp() {
 
   const [isTopUpModalVisible, toggleTopUpModalVisible] = useToggle();
   const [isSendModalVisible, toggleSendModalVisible] = useToggle();
+  const [isViewTransactionModalVisible, toggleViewTransactionModalVisible] =
+    useToggle();
 
   return (
     <div>
@@ -83,7 +85,10 @@ export default function ElusivApp() {
           isSendModalVisible={isSendModalVisible}
           toggleSendModalVisible={toggleSendModalVisible}
         />
-        <ViewPrivateTransaction elusiv={elusiv} />
+        <ViewPrivateTransaction
+          isViewTransactionModalVisible={isViewTransactionModalVisible}
+          toggleViewTransactionModalVisible={toggleViewTransactionModalVisible}
+        />
       </div>
     </div>
   );
