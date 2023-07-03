@@ -11,9 +11,9 @@ interface ViewPrivateTransactionProps {
 }
 
 interface TransactionModal {
-  owner: string,
-  recepient: string,
-  amount: number,
+  owner: string;
+  recepient: string;
+  amount: number;
 }
 
 export default function ViewPrivateTransaction({
@@ -26,32 +26,29 @@ export default function ViewPrivateTransaction({
   const { publicKey } = useWallet();
   const { connection } = useConnection();
   const [loading, setLoading] = useState(false);
-  const [listOfTxs, setListOfTxs] = useState<TransactionModal[]>([])
+  const [listOfTxs, setListOfTxs] = useState<TransactionModal[]>([]);
 
   const handleViewTransaction = async () => {
     if (!publicKey || !elusiv) return;
     setLoading(true);
     const last10Txs = await elusiv.getPrivateTransactions(10, 'LAMPORTS');
     if (last10Txs.length === 0) {
-      return
+      setLoading(false); // Set loading to false if there are no transactions
+      return;
     }
-    const listOfSendTx = last10Txs.filter((tx) => tx.txType === "SEND");
-    const listOfResolvedTx: TransactionModal[] = []
-    listOfSendTx.forEach(tx => {
-      transformTransaction(tx).then(x => {
-        if (x) {
-          listOfResolvedTx.push(x)
-        }
-      });
-    });
+    const listOfSendTx = last10Txs.filter((tx) => tx.txType === 'SEND');
 
-    setListOfTxs(listOfResolvedTx);
+    const listOfResolvedTx = await Promise.all(
+      listOfSendTx.map(transformTransaction)
+    );
+    setListOfTxs(listOfResolvedTx.filter((tx) => tx !== null));
     setLoading(false);
   };
 
-  const transformTransaction = async (tx: PrivateTxWrapper): Promise<TransactionModal | null> => {
+  const transformTransaction = async (
+    tx: PrivateTxWrapper
+  ): Promise<TransactionModal | null> => {
     if (!elusiv) return null;
-
 
     const viewingKey = elusiv.getViewingKey(tx);
     const decryptedTx = await getSendTxWithViewingKey(
@@ -62,10 +59,10 @@ export default function ViewPrivateTransaction({
 
     return {
       owner: decryptedTx.owner.toString(),
-      recepient: decryptedTx.sendTx.recipient!.toString(),
-      amount: decryptedTx.sendTx.amount
-    }
-  }
+      recipient: decryptedTx.sendTx.recipient!.toString(),
+      amount: decryptedTx.sendTx.amount,
+    };
+  };
 
   return (
     <>
@@ -74,27 +71,25 @@ export default function ViewPrivateTransaction({
         colorScheme="telegram"
         isLoading={loading}
         onClick={async () => {
-          await handleViewTransaction()
+          await handleViewTransaction();
           toggleViewTransactionModalVisible();
         }}
       >
         view transaction
       </Button>
-      {!loading && <Modal
-        loading={loading}
-        isOpen={isViewTransactionModalVisible}
-        onClose={toggleViewTransactionModalVisible}
-        modalLabel="View Private Transaction on Elusiv"
-        onSubmit={() => {
-
-        }}
-      >
-        {
-          <>
-            <div>memag</div>
-            {listOfTxs.map(
-              (tx, index) => {
-                console.log(tx)
+      {!loading && (
+        <Modal
+          loading={loading}
+          isOpen={isViewTransactionModalVisible}
+          onClose={toggleViewTransactionModalVisible}
+          modalLabel="View Private Transaction on Elusiv"
+          onSubmit={() => {}}
+        >
+          {
+            <>
+              <div>memag</div>
+              {listOfTxs.map((tx, index) => {
+                console.log(tx);
 
                 return (
                   <div key={index}>
@@ -102,13 +97,12 @@ export default function ViewPrivateTransaction({
                     <p>Receipent: {tx.recepient}</p>
                     <p>Amount: {tx.amount} SOL</p>
                   </div>
-                )
-              }
-            )}
-          </>
-
-        }
-      </Modal>}
+                );
+              })}
+            </>
+          }
+        </Modal>
+      )}
     </>
   );
 }
