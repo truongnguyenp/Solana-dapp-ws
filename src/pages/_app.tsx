@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
 import { WalletContextProvider } from '@/contexts/WalletContextProvider';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { clusterApiUrl } from '@solana/web3.js';
 import {
   PhantomWalletAdapter,
@@ -15,6 +15,7 @@ import {
 } from '@solana/wallet-adapter-wallets';
 import Layout from '@/components/layout/Layout';
 import { AppContextProvider } from '@/contexts/AppProvider';
+import { Elusiv } from '@elusiv/sdk';
 require('@solana/wallet-adapter-react-ui/styles.css');
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -31,13 +32,19 @@ export default function App({ Component, pageProps }: AppProps) {
     ],
     [network]
   );
+  const [elusiv, setElusiv] = useState<Elusiv | undefined>();
   return (
     <WalletContextProvider
       endpoint={endpoint}
       network={network}
       wallets={wallets}
     >
-      <AppContextProvider>
+      <AppContextProvider
+        wallet={{
+          elusiv: elusiv,
+          setElusiv: setElusiv,
+        }}
+      >
         <ChakraProvider>
           <Layout>
             <Component {...pageProps} />

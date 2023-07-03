@@ -16,16 +16,16 @@ import { AppContext } from '@/contexts/AppProvider';
 export default function Topup({
   isTopUpModalVisible,
   toggleTopUpModalVisible,
-  setTransaction
+  setTransaction,
 }: {
   isTopUpModalVisible: boolean;
   toggleTopUpModalVisible: () => void;
-  setTransaction: (obj: any) => void
+  setTransaction: (obj: any) => void;
 }) {
   const {
-    wallet: { setElusiv, elusiv },
+    wallet: { elusiv },
   } = useContext(AppContext);
-  const { publicKey, signTransaction } = useWallet();
+  const { signTransaction } = useWallet();
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState<number>();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -56,7 +56,7 @@ export default function Topup({
 
       const reponse = await elusiv.sendElusivTx(rebuildTopup);
       setTransaction(reponse);
-      if (reponse?.err) throw new Error(reponse.err);
+      if (reponse?.err) throw new Error(reponse.err.toString());
       toast({
         title: 'Topup succesfully.',
         description: `Topup ${amount} SOL succesfully.`,
@@ -68,7 +68,7 @@ export default function Topup({
     } catch (error) {
       toast({
         title: 'Topup failed.',
-        description: error.message,
+        description: error?.toString(),
         position: 'top-right',
         status: 'success',
         duration: 9000,
