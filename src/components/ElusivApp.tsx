@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Elusiv, SEED_MESSAGE } from '@elusiv/sdk';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useToggle } from 'usehooks-ts';
-import { useToast } from '@chakra-ui/react';
+import { useToast, Text } from '@chakra-ui/react';
 import Topup from './Topup';
 import Send from './Send';
 import { AppContext } from '@/contexts/AppProvider';
@@ -73,8 +73,8 @@ export default function ElusivApp() {
     useToggle();
 
   return (
-    <div>
-      <div className="flex justify-center align-center space-between w-full gap-4">
+    <div className='flex w-full h-[100vh] justify-center bg-gray-800'>
+      <div className="flex flex-col justify-center space-between gap-4 items-center w-[40%]">
         <Topup
           isTopUpModalVisible={isTopUpModalVisible}
           toggleTopUpModalVisible={toggleTopUpModalVisible}
@@ -90,6 +90,30 @@ export default function ElusivApp() {
           isViewTransactionModalVisible={isViewTransactionModalVisible}
           toggleViewTransactionModalVisible={toggleViewTransactionModalVisible}
         />
+      </div>
+      <div className='flex flex-col w-[60%] justify-center items-center'>
+        <Text className='align-center text-white text-center w-[450px] font-medium text-xl'>
+          This is a Elusiv Dapp Example for every body who want to know how to integrate Elusiv SDK to your app.
+          Here we have build 3 function when using Elusiv SDK.
+        </Text>
+        <br />
+        <ul className='list-disc text-white max-w-[400px] text-start'>
+          <li>
+            <Text className='align-center '>
+              Topup use for you topup money to Elusiv Program
+            </Text>
+          </li>
+          <li>
+            <Text className='align-center'>
+              Send use for you decide Elusiv send money to someone, this transaction can not view who is owner
+            </Text>
+          </li>
+          <li>
+            <Text className='align-center '>
+              View Transaction use for when you want to see the "real transaction" made by Elusiv
+            </Text>
+          </li>
+        </ul>
       </div>
     </div>
   );

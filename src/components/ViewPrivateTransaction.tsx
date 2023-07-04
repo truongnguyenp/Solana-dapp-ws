@@ -5,6 +5,8 @@ import { GlobalIcon } from './icons';
 import Modal from './common/Modal';
 import { Button, FormControl, FormLabel } from '@chakra-ui/react';
 import { AppContext } from '@/contexts/AppProvider';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import TransactionItem from './TransactionItem';
 interface ViewPrivateTransactionProps {
   isViewTransactionModalVisible: boolean;
   toggleViewTransactionModalVisible: () => void;
@@ -21,7 +23,7 @@ export default function ViewPrivateTransaction({
   toggleViewTransactionModalVisible,
 }: ViewPrivateTransactionProps) {
   const {
-    wallet: { setElusiv, elusiv },
+    wallet: { elusiv },
   } = useContext(AppContext);
   const { publicKey } = useWallet();
   const { connection } = useConnection();
@@ -41,7 +43,7 @@ export default function ViewPrivateTransaction({
     const listOfResolvedTx = await Promise.all(
       listOfSendTx.map(transformTransaction)
     );
-    setListOfTxs(listOfResolvedTx.filter((tx) => tx !== null));
+    setListOfTxs(listOfResolvedTx.filter((tx) => tx !== null) as TransactionModal[]);
     setLoading(false);
   };
 
@@ -59,7 +61,7 @@ export default function ViewPrivateTransaction({
 
     return {
       owner: decryptedTx.owner.toString(),
-      recipient: decryptedTx.sendTx.recipient!.toString(),
+      recepient: decryptedTx.sendTx.recipient!.toString(),
       amount: decryptedTx.sendTx.amount,
     };
   };
@@ -74,6 +76,7 @@ export default function ViewPrivateTransaction({
           await handleViewTransaction();
           toggleViewTransactionModalVisible();
         }}
+        className='w-[200px]'
       >
         view transaction
       </Button>
@@ -86,20 +89,13 @@ export default function ViewPrivateTransaction({
           onSubmit={() => {}}
         >
           {
-            <>
-              <div>memag</div>
+            <div className='max-h-[400px] w-[400px] overflow-scroll overflow-x-hidden scroll-mx-0'>
               {listOfTxs.map((tx, index) => {
-                console.log(tx);
-
                 return (
-                  <div key={index}>
-                    <p>Owner: {tx.owner}</p>
-                    <p>Receipent: {tx.recepient}</p>
-                    <p>Amount: {tx.amount} SOL</p>
-                  </div>
+                  <TransactionItem amount={tx.amount} owner={tx.owner} recepient={tx.recepient} key={index}/>
                 );
               })}
-            </>
+            </div>
           }
         </Modal>
       )}

@@ -66,6 +66,7 @@ export default function Send({ totalBalance, isSendModalVisible, toggleSendModal
                 colorScheme="whatsapp"
                 onClick={toggleSendModalVisible}
                 isLoading={isLoading}
+                className='w-[200px]'
             >
                 send
             </Button>

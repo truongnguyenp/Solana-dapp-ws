@@ -86,6 +86,7 @@ export default function Topup({
         leftIcon={<TopUpIcon />}
         colorScheme="purple"
         onClick={toggleTopUpModalVisible}
+        className='w-[200px]'
       >
         Topup
       </Button>
