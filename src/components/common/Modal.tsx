@@ -17,7 +17,7 @@ export default function Modal({
   modalLabel,
   loading,
   children,
-  actionLabel = 'Action',
+  actionLabel,
 }: {
   onClose: () => void;
   children?: React.ReactNode;
@@ -47,15 +47,17 @@ export default function Modal({
         <ModalCloseButton />
         <ModalBody>{children}</ModalBody>
         <ModalFooter justifyContent="center">
-      {!actionLabel && <Button
-          colorScheme="purple"
-          onClick={onSubmit}
-          isLoading={loading}
-          fontWeight="bold"
-          textTransform="uppercase"
-        >
-          {actionLabel}
-        </Button>}
+          {!!actionLabel && (
+            <Button
+              colorScheme="purple"
+              onClick={onSubmit}
+              isLoading={loading}
+              fontWeight="bold"
+              textTransform="uppercase"
+            >
+              {actionLabel}
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </ChakraModal>
