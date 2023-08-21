@@ -23,14 +23,14 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { Elusiv, SEED_MESSAGE, TopupTxData } from '@elusiv/sdk';
 import { AppContext } from '@/contexts/AppProvider';
 
-
-const Links = ['Dashboard', 'Projects', 'Team'];
+const Links = ['Eluquick'];
 
 const NavLink = ({ children }: { children: ReactNode }) => (
   <Link
     px={2}
     py={1}
     textColor={'gray.200'}
+    className="font-bold"
     rounded={'md'}
     _hover={{
       textDecoration: 'none',
@@ -47,12 +47,14 @@ export default function Header() {
   const { publicKey, signMessage } = useWallet();
   const toast = useToast();
   const { connection } = useConnection();
-  const { wallet: { setElusiv, elusiv } } = useContext(AppContext);
+  const {
+    wallet: { setElusiv, elusiv },
+  } = useContext(AppContext);
 
   const initElusiv = async () => {
     if (!publicKey || !signMessage) return;
     const encodedMessage = new TextEncoder().encode(SEED_MESSAGE);
-    
+
     try {
       const seed = await signMessage(encodedMessage);
       const elusivInstance = await Elusiv.getElusivInstance(
@@ -65,15 +67,15 @@ export default function Header() {
     } catch (error) {
       toast({
         title: 'Reject use Elusiv Payment',
-        description: "You reject to provide seed and key for Elusiv",
+        description: 'You reject to provide seed and key for Elusiv',
         status: 'info',
         duration: 9000,
         isClosable: true,
-        position: "top-right"
-      })
+        position: 'top-right',
+      });
       return;
     }
-  }
+  };
 
   return (
     <>
@@ -87,7 +89,6 @@ export default function Header() {
             onClick={isOpen ? onClose : onOpen}
           />
           <HStack spacing={8} alignItems={'center'}>
-            <Box>Logo</Box>
             <HStack
               as={'nav'}
               spacing={4}
@@ -100,13 +101,12 @@ export default function Header() {
           </HStack>
           <Flex alignItems={'center'}>
             <div className="mr-2">
-              <div className='flex-row flex'>
-                {!elusiv && <button 
-                  className='elusiv-button mr-4'
-                  onClick={initElusiv}
-                >
-                  Connect to Elusiv
-                </button>}
+              <div className="flex-row flex">
+                {!elusiv && (
+                  <button className="elusiv-button mr-4" onClick={initElusiv}>
+                    Connect to Elusiv
+                  </button>
+                )}
 
                 <WalletMultiButtonDynamic />
               </div>
